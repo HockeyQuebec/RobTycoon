@@ -14,19 +14,23 @@ jobs:
         os: [linux, darwin, windows]
         arch: [amd64]
 
+    continue-on-error: false
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: 1.21
 
-    - name: Build Binary
+    - name: Build binary
       run: |
         GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o RobTycoon-${{ matrix.os }}-${{ matrix.arch }} main.go
 
-    - name: Upload Release
-      uses: softprops/action-gh-release@v1
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        files: |
-          RobTycoon-*
+        files: RobTycoon-*
+        token: ${{ secrets.GITHUB_TOKEN }}
